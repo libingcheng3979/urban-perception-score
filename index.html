@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>儿童易失踪空间风险感知研究平台</title>
     
     <script src="https://cdn.jsdelivr.net/npm/leancloud-storage@4.15.2/dist/av-min.js"></script>
@@ -31,6 +31,9 @@
             color: var(--text-primary);
             line-height: 1.6;
             -webkit-font-smoothing: antialiased;
+            
+            overflow-x: hidden; 
+            width: 100%;
         }
         
         /* ==================== 页面容器 ==================== */
@@ -722,7 +725,7 @@
             to { transform: rotate(360deg); }
         }
         
-        /* ==================== 响应式 ==================== */
+        /* ==================== 平板响应式 (原有) ==================== */
         @media (max-width: 1024px) {
             #page-welcome .page-container,
             #page-instruction .content-wrapper,
@@ -770,6 +773,69 @@
             
             .image-box {
                 aspect-ratio: 8/3;
+            }
+        }
+        
+        /* ==================== 手机端深度优化 ==================== */
+        /* --- 专门针对窄屏手机的样式修复 --- */
+        @media (max-width: 768px) {
+            /* 减少页面左右padding，缓解“局促感” */
+            .page {
+                padding: 2rem 1.25rem;
+            }
+            
+            /* 修复大标题撑破屏幕的问题，使用视口单位 vw 自动适应 */
+            .hero-left .page-number {
+                font-size: 3rem; /* 或者 12vw */
+                line-height: 1.1;
+                margin-bottom: 1rem;
+                word-wrap: break-word;
+            }
+
+            .hero-left h1 {
+                font-size: 2rem;
+                margin-bottom: 1.5rem;
+            }
+            
+            .hero-right {
+                padding-top: 2rem;
+            }
+            
+            /* 缩小统计栏间距 */
+            .stats-row {
+                gap: 1.5rem;
+                margin-top: 2rem;
+                padding-top: 2rem;
+            }
+            
+            .stat-item .stat-number {
+                font-size: 2.5rem;
+            }
+            
+            /* 按钮全宽，更易点击 */
+            .btn-block {
+                width: 100%;
+            }
+            
+            /* 图片对比区域优化：调整比例，避免在手机上太高或太扁 */
+            .image-box {
+                aspect-ratio: 16/9;
+            }
+            
+            /* 模态框内边距调整 */
+            .modal-content {
+                padding: 1.5rem;
+            }
+            
+            .modal-close {
+                top: 0.5rem;
+                right: 0.5rem;
+            }
+            
+            /* 团队署名调整 */
+            .team-branding {
+                margin-top: 4rem;
+                margin-bottom: 1rem;
             }
         }
     </style>
@@ -1106,7 +1172,7 @@
             return { type: deviceType, userAgent: ua };
         }
         
-        // [修改] 已删除 getIPAddress 函数，由后端获取
+        // 已删除 getIPAddress 函数，由后端获取
         
         function toggleLoading(show) {
             document.getElementById('loading-overlay').classList.toggle('active', show);
