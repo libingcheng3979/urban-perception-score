@@ -57,7 +57,7 @@
         .page-container {
             max-width: 1200px;
             margin: 0 auto;
-            position: relative; /* 为绝对定位子元素提供参照 */
+            position: relative;
         }
         
         /* ==================== 欢迎页 ==================== */
@@ -67,7 +67,7 @@
             gap: 6rem;
             align-items: center;
             min-height: calc(100vh - 6rem);
-            padding-bottom: 0.5rem; /* 为底部署名留出空间 */
+            padding-bottom: 0.5rem;
         }
         
         .hero-left .page-number {
@@ -94,7 +94,6 @@
             margin-bottom: 3rem;
         }
         
-        /* 团队署名新样式 */
         .team-branding {
             position: absolute;
             bottom: 0;
@@ -108,14 +107,13 @@
             width: 100%;
         }
         
-        /* 团队署名上方的短装饰条 */
         .team-branding::before {
             content: '';
             display: block;
-            width: 40px; /* 长度变短 */
+            width: 40px;
             height: 3px;
             background: var(--primary-blue);
-            margin: 0 auto 1rem auto; /* 居中 */
+            margin: 0 auto 1rem auto;
             border-radius: 2px;
         }
         
@@ -406,7 +404,7 @@
             color: var(--text-primary);
         }
         
-        /* ==================== 图片比较页 ==================== */
+        /* ==================== 图片比较页 (修正核心区域) ==================== */
         #page-comparison .page-container {
             max-width: 1400px;
         }
@@ -455,8 +453,9 @@
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
-            aspect-ratio: 8/3; 
+            aspect-ratio: 8/3; /* 保持全景图片2048x768的比例 */
             background: var(--bg-light);
+            -webkit-tap-highlight-color: transparent; /* 移除移动端默认点击高亮 */
         }
         
         .image-box::before {
@@ -483,15 +482,28 @@
             z-index: 2;
         }
         
-        .image-box:hover:not(.disabled) {
-            border-color: var(--primary-blue);
-            transform: translateY(-8px);
-            box-shadow: 0 16px 48px rgba(0, 102, 204, 0.2);
+        /* 重要修改：
+           使用 @media (hover: hover) 包裹悬浮样式。
+           这意味着这些样式（蓝色边框、文字提示）只会在支持真正鼠标悬浮的设备（PC）上生效。
+           在触摸屏手机上，点击不会触发这些永久滞留的样式。
+        */
+        @media (hover: hover) {
+            .image-box:hover:not(.disabled) {
+                border-color: var(--primary-blue);
+                transform: translateY(-8px);
+                box-shadow: 0 16px 48px rgba(0, 102, 204, 0.2);
+            }
+            
+            .image-box:hover:not(.disabled)::before,
+            .image-box:hover:not(.disabled)::after {
+                opacity: 1;
+            }
         }
         
-        .image-box:hover:not(.disabled)::before,
-        .image-box:hover:not(.disabled)::after {
-            opacity: 1;
+        /* 移动端交互优化：增加点击时的按压反馈，但不改变颜色和显示文字 */
+        .image-box:active:not(.disabled) {
+            transform: scale(0.98);
+            border-color: var(--primary-blue); /* 仅按住时变色 */
         }
         
         .image-box.disabled {
@@ -725,7 +737,7 @@
             to { transform: rotate(360deg); }
         }
         
-        /* ==================== 平板响应式 (原有) ==================== */
+        /* ==================== 平板响应式 ==================== */
         @media (max-width: 1024px) {
             #page-welcome .page-container,
             #page-instruction .content-wrapper,
@@ -744,7 +756,7 @@
             }
             
             .team-branding {
-                position: relative; /* 移动端取消绝对定位，改为流式布局 */
+                position: relative;
                 bottom: auto;
                 left: auto;
                 transform: none;
@@ -771,22 +783,20 @@
                 position: static;
             }
             
+            /* 平板端也保持 8/3 比例 */
             .image-box {
                 aspect-ratio: 8/3;
             }
         }
         
         /* ==================== 手机端深度优化 ==================== */
-        /* --- 专门针对窄屏手机的样式修复 --- */
         @media (max-width: 768px) {
-            /* 减少页面左右padding，缓解“局促感” */
             .page {
                 padding: 2rem 1.25rem;
             }
             
-            /* 修复大标题撑破屏幕的问题，使用视口单位 vw 自动适应 */
             .hero-left .page-number {
-                font-size: 3rem; /* 或者 12vw */
+                font-size: 3rem;
                 line-height: 1.1;
                 margin-bottom: 1rem;
                 word-wrap: break-word;
@@ -801,7 +811,6 @@
                 padding-top: 2rem;
             }
             
-            /* 缩小统计栏间距 */
             .stats-row {
                 gap: 1.5rem;
                 margin-top: 2rem;
@@ -812,17 +821,17 @@
                 font-size: 2.5rem;
             }
             
-            /* 按钮全宽，更易点击 */
             .btn-block {
                 width: 100%;
             }
             
-            /* 图片对比区域优化：调整比例，避免在手机上太高或太扁 */
+            /* 修正图片比例
+               为了不让图片被裁切变形，这里必须保持 8/3 的比例。
+            */
             .image-box {
-                aspect-ratio: 16/9;
+                aspect-ratio: 8/3; 
             }
             
-            /* 模态框内边距调整 */
             .modal-content {
                 padding: 1.5rem;
             }
@@ -832,7 +841,6 @@
                 right: 0.5rem;
             }
             
-            /* 团队署名调整 */
             .team-branding {
                 margin-top: 4rem;
                 margin-bottom: 1rem;
@@ -1172,8 +1180,6 @@
             return { type: deviceType, userAgent: ua };
         }
         
-        // 已删除 getIPAddress 函数，由后端获取
-        
         function toggleLoading(show) {
             document.getElementById('loading-overlay').classList.toggle('active', show);
         }
@@ -1256,13 +1262,10 @@
                 gender: document.getElementById('gender').value,
                 age_group: document.getElementById('age_group').value,
                 child_care_experience: careExperience,
-                // 无论是否有经验，都发送这两个字段。无经验时发送 null。
                 care_years: careExperience ? document.getElementById('care_years').value : null,
                 relation_with_child: careExperience ? document.getElementById('relation_with_child').value : null,
-                // 选填信息
                 education_level: document.getElementById('education_level').value || null,
                 residence_area: document.getElementById('residence_area').value || null
-                // 注意：ip_address 字段已从此处移除，交由云函数后端自动获取
             };
             
             const deviceInfo = getDeviceInfo();
@@ -1272,7 +1275,6 @@
             toggleLoading(true);
             
             try {
-                // 直接调用云函数，无需等待获取IP
                 const result = await AV.Cloud.run('createParticipant', formData);
                 if (result.success) {
                     appState.participantId = result.participant_id;
