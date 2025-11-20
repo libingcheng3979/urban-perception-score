@@ -788,7 +788,7 @@
                 aspect-ratio: 8/3;
             }
         }
-        
+
         /* ==================== 手机端深度优化 ==================== */
         @media (max-width: 768px) {
             .page {
@@ -825,9 +825,7 @@
                 width: 100%;
             }
             
-            /* 修正图片比例
-               为了不让图片被裁切变形，这里必须保持 8/3 的比例。
-            */
+            /* 修正图片比例 */
             .image-box {
                 aspect-ratio: 8/3; 
             }
@@ -844,6 +842,18 @@
             .team-branding {
                 margin-top: 4rem;
                 margin-bottom: 1rem;
+            }
+
+            /* 新增按钮并排代码 */
+            .button-group {
+                grid-template-columns: 1fr 1fr;
+                gap: 0.75rem; /* 间距稍微小一点，确保小屏手机也能放下 */
+            }
+
+            .button-group .btn {
+                padding: 1rem 0.25rem; /* 极窄边距 */
+                font-size: 0.9rem;
+                margin-top: 0; /* 覆盖之前的 margin-top: 2rem */
             }
         }
     </style>
